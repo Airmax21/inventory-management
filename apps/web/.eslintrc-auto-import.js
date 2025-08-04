@@ -134,6 +134,7 @@ export default {
     "until": true,
     "useActiveElement": true,
     "useAnimate": true,
+    "useAppAuthStore": true,
     "useAppPageStore": true,
     "useArrayDifference": true,
     "useArrayEvery": true,

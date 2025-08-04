@@ -1,6 +1,6 @@
 export const useAppAuthStore = defineStore('auth', {
     state: () => ({
-        token: useLocalStorage('token', '')
+        token: useLocalStorage('auth/token', '')
     }),
     getters: {
         isAuthenticated(state): boolean {
