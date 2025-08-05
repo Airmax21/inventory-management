@@ -255,6 +255,7 @@ export default {
     "useRefHistory": true,
     "useResizeObserver": true,
     "useRoute": true,
+    "useRouteQuery": true,
     "useRouter": true,
     "useSSRWidth": true,
     "useScreenOrientation": true,

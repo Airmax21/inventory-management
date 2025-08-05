@@ -9,6 +9,8 @@ import vueComponents from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
 import autoImport from 'unplugin-auto-import/vite';
 import { VueRouterAutoImports } from 'unplugin-vue-router';
+import IconsResolver from 'unplugin-icons/resolver';
+import icons from 'unplugin-icons/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -26,10 +28,15 @@ export default defineConfig({
     vueComponents({
       resolvers: [
         AntDesignVueResolver({ importStyle: false }),
+        IconsResolver({
+          prefix: 'icon',
+          enabledCollections: ['mdi', 'ri', 'material-symbols'],
+        }),
       ],
       directoryAsNamespace: true,
       dts: resolve(__dirname, 'src/types/components.d.ts'),
     }),
+    icons(),
     autoImport({
       imports: [
         'vue',
@@ -37,6 +44,7 @@ export default defineConfig({
         'pinia',
         '@vueuse/core',
         {
+          '@vueuse/router': ['useRouteQuery'],
           '@tanstack/vue-query': [
             'useQuery',
             'useQueryClient',

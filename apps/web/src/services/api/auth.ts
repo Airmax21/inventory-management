@@ -1,20 +1,14 @@
 import { ApiClient } from '@/providers';
+import type { ILogin, IUser } from '@/types/auth';
 
-interface Login {
-  message: string
-  data: {
-    user: {
-      email: string,
-      username: string
-    },
-    token: string
-  }
-}
 
 const endpoint = '/user';
 
 export default {
   login: (body: { email: string, password: string }) => {
-    return ApiClient.post<Login>(`${endpoint}/login`, body);
+    return ApiClient.post<ILogin>(`${endpoint}/login`, body);
   },
+  register: (body: Partial<IUser>) => {
+    return ApiClient.post<Partial<IUser>>(`${endpoint}/register`, body)
+  }
 };

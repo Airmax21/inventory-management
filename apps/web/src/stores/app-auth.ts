@@ -1,6 +1,17 @@
+import type { IUser } from "@/types/auth";
+
+interface IState {
+    token: Ref<string>,
+    user: Ref<Partial<IUser>>
+}
+
 export const useAppAuthStore = defineStore('auth', {
-    state: () => ({
-        token: useLocalStorage('auth/token', '')
+    state: (): IState => ({
+        token: useLocalStorage('auth/token', ''),
+        user: useLocalStorage('auth/user', {
+            email: '',
+            username: ''
+        })
     }),
     getters: {
         isAuthenticated(state): boolean {
@@ -10,6 +21,9 @@ export const useAppAuthStore = defineStore('auth', {
     actions: {
         setToken(token: string) {
             this.token = token;
+        },
+        setUser(user: Partial<IUser>) {
+            this.user = user
         }
     }
 })

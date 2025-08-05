@@ -5,7 +5,6 @@
 
     /* Linting */
     "strict": true,
-    "types": ["unplugin-vue-router/client"],
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,

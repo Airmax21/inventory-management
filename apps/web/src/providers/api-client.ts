@@ -7,6 +7,11 @@ const ApiClient = axios.create({
 
 ApiClient.interceptors.request.use(
   function (config) {
+    const appAuthStore = useAppAuthStore()
+
+    if (appAuthStore.token) {
+      config.headers.set('Authorization', `Bearer ${appAuthStore.token}`);
+    }
     // Do something before request is sent
     config.headers.set('Accept-Language', document.documentElement.lang);
     config.headers.set(

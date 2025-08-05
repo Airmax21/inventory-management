@@ -1,6 +1,6 @@
 import { User } from "@database/entity/user.entity";
 import { Router, Request, Response } from "express";
-import { Repository } from "typeorm";
+import { FindOptionsOrder, FindOptionsWhere, Like, Repository } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
 
@@ -28,7 +28,7 @@ export default class UserService {
             const token = jwt.sign(
                 { id: user.id, email: user.email },
                 process.env.JWT_SECRET as string,
-                { expiresIn: '1h' }
+                { expiresIn: '6h' }
             );
             const data = {
                 user: {
@@ -71,6 +71,52 @@ export default class UserService {
 
     }
 
+    async get(page: number, limit: number, search: string, sortBy: string, res: Response) {
+        const skip = (page - 1) * limit;
+
+        const findOptions: {
+            where?: FindOptionsWhere<User>[];
+            order?: FindOptionsOrder<User>;
+        } = {};
+
+        if (search) {
+            findOptions.where = [
+                { username: Like(`%${search}%`) },
+                { name: Like(`%${search}%`) },
+                { email: Like(`%${search}%`) },
+            ];
+        }
+
+        const [sortColumn, sortOrder] = sortBy.split(':');
+        if (sortColumn && (sortOrder === 'ASC' || sortOrder === 'DESC')) {
+            findOptions.order = { [sortColumn]: sortOrder };
+        }
+
+        try {
+            const [users, totalItems] = await this.userRepository.findAndCount({
+                ...findOptions,
+                skip: skip,
+                take: limit,
+            });
+
+            const totalPages = Math.ceil(totalItems / limit);
+
+            res.status(200).json({
+                data: users,
+                meta: {
+                    totalItems: totalItems,
+                    currentPage: page,
+                    itemsPerPage: limit,
+                    totalPages: totalPages,
+                },
+            });
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Gagal mengambil data pengguna.' });
+        }
+    }
+
     async update(id: string, dto: Partial<User>, res: Response) {
         try {
             let user = await this.userRepository.findOneBy({ id });
@@ -96,7 +142,7 @@ export default class UserService {
             const user = await this.userRepository.findOneBy({ id })
             if (user) {
                 await this.userRepository.softRemove(user)
-                return res.status(200).json({message: 'Delete user Successful'})
+                return res.status(200).json({ message: 'Delete user Successful' })
             }
 
             return res.status(404).json({ message: "Pengguna tidak ditemukan." });

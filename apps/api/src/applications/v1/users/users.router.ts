@@ -106,6 +106,15 @@ router.get("/me", authMiddleware, async (req: AuthenticatedRequest, res: Respons
     res.json(user);
 });
 
+router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = (req.query.search as string) || '';
+    const sortBy = (req.query.sortBy as string) || 'name:ASC';
+
+    await userService.get(page, limit, search, sortBy, res);
+})
+
 /**
  * @swagger
  * "/user":
