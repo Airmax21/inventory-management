@@ -1,22 +1,20 @@
 import { Router, Request, Response } from "express";
 import { AppDataSource } from "@database/datasource";
-import { Master } from "@database/entity/master.entity";
-import MasterService from "./master.service";
+import { Category } from "@database/entity/category.entity";
+import CategoryService from "./category.service";
 import authMiddleware, { AuthenticatedRequest } from "@/middleware/auth";
 
 
 const router = Router();
-const masterRepository = AppDataSource.getRepository(Master);
-const masterService = new MasterService(masterRepository);
+const categoryRepository = AppDataSource.getRepository(Category);
+const categoryService = new CategoryService(categoryRepository);
 /**
  * @swagger
- * "/master/register":
+ * "/category":
  *  post:
- *   summary: Register Master
+ *   summary: Register Category
  *   tags:
- *   - Master
- *   security:
- *   - bearerAuth: []
+ *   - Category
  *   requestBody:
  *     required: true
  *     content:
@@ -27,7 +25,7 @@ const masterService = new MasterService(masterRepository);
  *           - email
  *           - password
  *           - name
- *           - mastername
+ *           - categoryname
  *           properties:
  *             email:
  *               type: string
@@ -35,7 +33,7 @@ const masterService = new MasterService(masterRepository);
  *             password:
  *               type: string
  *               format: password
- *             mastername:
+ *             categoryname:
  *               type: string
  *               default: test
  *             name:
@@ -48,38 +46,27 @@ const masterService = new MasterService(masterRepository);
  *       description: Email atau password salah.
  */
 
-router.post("/",authMiddleware ,async (req: AuthenticatedRequest, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
     const dto = req.body;
-    await masterService.create(dto, res)
+    await categoryService.create(dto, res)
 });
 
-/**
- * @swagger
- * "/master":
- *  get:
- *   summary: Get Info Master
- *   tags:
- *   - Master
- *   security:
- *   - bearerAuth: []
- *   responses:
- *     '200':
- *       description: Login berhasil.
- *     '401':
- *       description: Email atau password salah.
- */
 router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
-    const master = await masterRepository.find();
-    res.json(master);
-});
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const search = (req.query.search as string) || '';
+    const sortBy = (req.query.sortBy as string) || 'name:ASC';
+
+    await categoryService.get(page, limit, search, sortBy, res);
+})
 
 /**
  * @swagger
- * "/master":
+ * "/category":
  *  put:
- *   summary: Update Master
+ *   summary: Update Category
  *   tags:
- *   - Master
+ *   - Category
  *   security:
  *   - bearerAuth: []
  *   parameters:
@@ -99,7 +86,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
  *           - email
  *           - password
  *           - name
- *           - mastername
+ *           - categoryname
  *           properties:
  *             email:
  *               type: string
@@ -107,7 +94,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
  *             password:
  *               type: string
  *               format: password
- *             mastername:
+ *             categoryname:
  *               type: string
  *               default: test
  *             name:
@@ -119,20 +106,20 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
  *     '401':
  *       description: Email atau password salah.
  */
-router.put("/:id",authMiddleware, async(req: AuthenticatedRequest, res: Response) => {
+router.put("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const params = req.params
     const dto = req.body
 
-    await masterService.update(params.id, dto, res);
+    await categoryService.update(params.id, dto, res);
 })
 
 /**
  * @swagger
- * "/master":
+ * "/category":
  *  delete:
- *   summary: Delete Master
+ *   summary: Delete Category
  *   tags:
- *   - Master
+ *   - Category
  *   security:
  *   - bearerAuth: []
  *   parameters:
@@ -148,11 +135,17 @@ router.put("/:id",authMiddleware, async(req: AuthenticatedRequest, res: Response
  *     '401':
  *       description: Email atau password salah.
  */
-router.delete("/:id",authMiddleware,async(req: AuthenticatedRequest, res:Response) => {
+router.delete("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const params = req.params
     const dto = req.body
 
-    await masterService.delete(params.id, res);
+    await categoryService.delete(params.id, res);
+})
+
+router.delete("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+    const ids: any = req.query.ids;
+    console.log(ids)
+    await categoryService.deleteMany(ids, res);
 })
 
 export default router;

@@ -7,12 +7,11 @@ const ApiClient = axios.create({
 
 ApiClient.interceptors.request.use(
   function (config) {
-    const appAuthStore = useAppAuthStore()
+    const appAuthStore = useAppAuthStore();
 
     if (appAuthStore.token) {
-      config.headers.set('Authorization', `Bearer ${appAuthStore.token}`);
+      config.headers.set('Authorization', `Bearer ${appAuthStore.token.token}`);
     }
-    // Do something before request is sent
     config.headers.set('Accept-Language', document.documentElement.lang);
     config.headers.set(
       'Accept-Timezone',
@@ -20,8 +19,19 @@ ApiClient.interceptors.request.use(
     );
     return config;
   },
-  function (error: Error) {
-    // Do something with request error
+  function (error) {
+    return Promise.reject(error);
+  },
+);
+
+ApiClient.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    if (error.response && error.response.status === 401) {
+      window.location.href = '/login'; 
+    }
     return Promise.reject(error);
   },
 );

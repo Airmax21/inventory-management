@@ -1,20 +1,20 @@
 import { Router, Request, Response } from "express";
 import { AppDataSource } from "@database/datasource";
-import { User } from "@database/entity/user.entity";
-import UserService from "./user.service";
+import { Location } from "@database/entity/location.entity";
+import LocationService from "./location.service";
 import authMiddleware, { AuthenticatedRequest } from "@/middleware/auth";
 
 
 const router = Router();
-const userRepository = AppDataSource.getRepository(User);
-const userService = new UserService(userRepository);
+const locationRepository = AppDataSource.getRepository(Location);
+const locationService = new LocationService(locationRepository);
 /**
  * @swagger
- * "/user/register":
+ * "/location":
  *  post:
- *   summary: Register User
+ *   summary: Register Location
  *   tags:
- *   - User
+ *   - Location
  *   requestBody:
  *     required: true
  *     content:
@@ -25,7 +25,7 @@ const userService = new UserService(userRepository);
  *           - email
  *           - password
  *           - name
- *           - username
+ *           - locationname
  *           properties:
  *             email:
  *               type: string
@@ -33,7 +33,7 @@ const userService = new UserService(userRepository);
  *             password:
  *               type: string
  *               format: password
- *             username:
+ *             locationname:
  *               type: string
  *               default: test
  *             name:
@@ -46,64 +46,9 @@ const userService = new UserService(userRepository);
  *       description: Email atau password salah.
  */
 
-router.post("/register", async (req: Request, res: Response) => {
+router.post("/", async (req: Request, res: Response) => {
     const dto = req.body;
-    await userService.register(dto, res)
-});
-
-/**
- * @swagger
- * "/user/login":
- *  post:
- *   summary: Login User
- *   tags:
- *   - User
- *   requestBody:
- *     required: true
- *     content:
- *       application/json:
- *         schema:
- *           type: object
- *           required:
- *           - email
- *           - password
- *           properties:
- *             email:
- *               type: string
- *               format: email
- *             password:
- *               type: string
- *               format: password
- *   responses:
- *     '200':
- *       description: Login berhasil.
- *     '401':
- *       description: Email atau password salah.
- */
-
-router.post("/login", async (req: Request, res: Response) => {
-    const dto = req.body;
-    await userService.login(dto, res);
-});
-
-/**
- * @swagger
- * "/user/me":
- *  get:
- *   summary: Get Info User
- *   tags:
- *   - User
- *   security:
- *   - bearerAuth: []
- *   responses:
- *     '200':
- *       description: Login berhasil.
- *     '401':
- *       description: Email atau password salah.
- */
-router.get("/me", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
-    const user = await userRepository.findOneBy({ email: req.user?.email });
-    res.json(user);
+    await locationService.create(dto, res)
 });
 
 router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
@@ -112,16 +57,16 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
     const search = (req.query.search as string) || '';
     const sortBy = (req.query.sortBy as string) || 'name:ASC';
 
-    await userService.get(page, limit, search, sortBy, res);
+    await locationService.get(page, limit, search, sortBy, res);
 })
 
 /**
  * @swagger
- * "/user":
+ * "/location":
  *  put:
- *   summary: Update User
+ *   summary: Update Location
  *   tags:
- *   - User
+ *   - Location
  *   security:
  *   - bearerAuth: []
  *   parameters:
@@ -141,7 +86,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
  *           - email
  *           - password
  *           - name
- *           - username
+ *           - locationname
  *           properties:
  *             email:
  *               type: string
@@ -149,7 +94,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
  *             password:
  *               type: string
  *               format: password
- *             username:
+ *             locationname:
  *               type: string
  *               default: test
  *             name:
@@ -165,16 +110,16 @@ router.put("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Respon
     const params = req.params
     const dto = req.body
 
-    await userService.update(params.id, dto, res);
+    await locationService.update(params.id, dto, res);
 })
 
 /**
  * @swagger
- * "/user":
+ * "/location":
  *  delete:
- *   summary: Delete User
+ *   summary: Delete Location
  *   tags:
- *   - User
+ *   - Location
  *   security:
  *   - bearerAuth: []
  *   parameters:
@@ -194,13 +139,13 @@ router.delete("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Res
     const params = req.params
     const dto = req.body
 
-    await userService.delete(params.id, res);
+    await locationService.delete(params.id, res);
 })
 
 router.delete("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const ids: any = req.query.ids;
     console.log(ids)
-    await userService.deleteMany(ids, res);
+    await locationService.deleteMany(ids, res);
 })
 
 export default router;

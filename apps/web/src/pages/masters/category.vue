@@ -10,12 +10,13 @@
             </div>
             <div class="flex gap-4">
                 <a-button :disabled="selectedRowKeys.length < 1" type="primary" danger
-                    class="!flex !items-center !justify-center button-delete-many" @click="handleUserDeleteMany">
+                    class="!flex !items-center !justify-center button-delete-many"
+                    @click="handleCategoryDeleteMany">
                     <icon-ri-delete-bin-6-line />
                 </a-button>
-
+    
                 <a-button type="primary" class="!flex !items-center !justify-center button-add"
-                    @click="handleUserCreate">
+                    @click="handleCategoryCreate">
                     <icon-ri-add-line />
                 </a-button>
             </div>
@@ -65,7 +66,7 @@
                                 })
                                 }}
                             </template> -->
-                            <a-button shape="round" class="button-edit" @click="handleUserUpdate(record as IUser)">
+                            <a-button shape="round" class="button-edit" @click="handleCategoryUpdate(record as ICategory)">
                                 <div class="flex items-center justify-center">
                                     <icon-ri-pencil-line />
                                 </div>
@@ -80,8 +81,7 @@
                                 })
                                 }}
                             </template> -->
-                            <a-button danger shape="round" class="button-delete"
-                                @click="handleUserDelete(record as IUser)">
+                            <a-button danger shape="round" class="button-delete" @click="handleCategoryDelete(record as ICategory)">
                                 <div class="flex items-center justify-center">
                                     <icon-ri-delete-bin-6-line />
                                 </div>
@@ -105,11 +105,11 @@ import { keepPreviousData } from '@tanstack/vue-query';
 import type { TableProps } from 'ant-design-vue';
 import dayjs from 'dayjs';
 import { isArray, isNumber } from 'lodash';
-import formModalCreate from '@/components/moleculs/users/modal-create.vue';
-import formModalUpdate from '@/components/moleculs/users/modal-update.vue';
-import formModalDelete from '@/components/moleculs/users/modal-delete.vue';
-import formModalDeleteMany from '@/components/moleculs/users/modal-delete-many.vue';
-import type { IUser } from '@/types/auth';
+import formModalCreate from '@/components/moleculs/categories/modal-create.vue';
+import formModalUpdate from '@/components/moleculs/categories/modal-update.vue';
+import formModalDelete from '@/components/moleculs/categories/modal-delete.vue';
+import formModalDeleteMany from '@/components/moleculs/categories/modal-delete-many.vue';
+import type { ICategory } from '@/types/category';
 
 const page = useRouteQuery<number>('page', 1, { transform: Number });
 const limit = useRouteQuery<number>('limit', 10, { transform: Number });
@@ -121,6 +121,7 @@ const modalCreateRef = ref<InstanceType<typeof formModalCreate>>();
 const modalUpdateRef = ref<InstanceType<typeof formModalUpdate>>();
 const modalDeleteRef = ref<InstanceType<typeof formModalDelete>>();
 const modalDeleteManyRef = ref<InstanceType<typeof formModalDeleteMany>>();
+
 
 watch(searchDebounced, () => {
     page.value = 1;
@@ -134,9 +135,9 @@ const queryParams = computed(() => ({
 }));
 
 const { data, isFetching } = useQuery({
-    queryKey: ['users/paginate', queryParams],
+    queryKey: ['categories/paginate', queryParams],
     queryFn: async () => {
-        const { data } = await api.user.paginate(queryParams.value)
+        const { data } = await api.category.paginate(queryParams.value)
 
         return data;
     },
@@ -167,24 +168,6 @@ function getSortOrder(key: string, value: string) {
 
 const selectedRowKeys = ref<string[]>([]);
 const columns = computed<TableProps['columns']>(() => [
-    {
-        title: 'Email',
-        key: 'email',
-        sorter: true,
-        sortOrder: getSortOrder('email', sortBy.value),
-        dataIndex: 'email',
-        width: 200,
-        ellipsis: true,
-    },
-    {
-        title: 'Username',
-        key: 'username',
-        sorter: true,
-        sortOrder: getSortOrder('username', sortBy.value),
-        dataIndex: 'username',
-        width: 200,
-        ellipsis: true,
-    },
     {
         title: 'Name',
         key: 'name',
@@ -238,16 +221,16 @@ const handleChange: TableProps['onChange'] = (
     }
 };
 
-const handleUserCreate = () => {
+const handleCategoryCreate = () => {
     modalCreateRef.value?.open();
 }
-const handleUserUpdate = (user: IUser) => {
-    modalUpdateRef.value?.open(user);
+const handleCategoryUpdate = (category: ICategory) => {
+    modalUpdateRef.value?.open(category);
 };
-const handleUserDelete = (user: IUser) => {
-    modalDeleteRef.value?.open(user);
+const handleCategoryDelete = (category: ICategory) => {
+    modalDeleteRef.value?.open(category);
 };
-const handleUserDeleteMany = () => {
+const handleCategoryDeleteMany = () => {
     modalDeleteManyRef.value?.open();
 };
 </script>

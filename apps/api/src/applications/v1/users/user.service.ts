@@ -1,8 +1,9 @@
 import { User } from "@database/entity/user.entity";
 import { Router, Request, Response } from "express";
-import { FindOptionsOrder, FindOptionsWhere, Like, Repository } from "typeorm";
+import { FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
+import dayjs from 'dayjs';
 
 export default class UserService {
     private readonly userRepository: Repository<User>;
@@ -30,12 +31,18 @@ export default class UserService {
                 process.env.JWT_SECRET as string,
                 { expiresIn: '6h' }
             );
+
+            const expiresAt = dayjs().add(6, 'hour').toISOString();
+
             const data = {
                 user: {
                     email: user.email,
                     username: user.username
                 },
-                token
+                token: {
+                    token,
+                    expiresAt
+                }
             }
 
             res.status(200).json({ message: "Sign-in berhasil", data });
@@ -148,6 +155,23 @@ export default class UserService {
             return res.status(404).json({ message: "Pengguna tidak ditemukan." });
         }
         catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Delete gagal" });
+        }
+    }
+
+    async deleteMany(dto: string[], res: Response) {
+        try {
+            if (!dto || (Array.isArray(dto) && dto.length === 0)) {
+                return res.status(400).json({ message: "An array of ID is required." });
+            }
+            const idArray = Array.isArray(dto) ? dto : String(dto).split(',');
+            const stringIds = idArray.filter(id => id.trim() !== '');
+            const items = await this.userRepository.findBy({ id: In(stringIds) });
+            await this.userRepository.softRemove(items)
+
+            res.status(200).json({ message: `${items.length} users successfully removed.` });
+        } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Delete gagal" });
         }

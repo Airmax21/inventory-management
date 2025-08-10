@@ -14,5 +14,10 @@ export default {
     },
     remove: (id: IUser['id']) => {
         return ApiClient.delete<IUser>(`${endpoint}/${id}`)
+    },
+    removeMany: (ids: IUser['id'][]) => {
+        return ApiClient.delete<IUser>(endpoint, {
+            params: { ids: ids.join(',') }
+        })
     }
 }
