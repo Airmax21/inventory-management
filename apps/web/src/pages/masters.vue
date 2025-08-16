@@ -21,4 +21,7 @@ const pageTabItems = computed(() => [
         tab: 'Data Location'
     }
 ])
+
+const appPageStore = useAppPageStore();
+appPageStore.setPage(['2'])
 </script>

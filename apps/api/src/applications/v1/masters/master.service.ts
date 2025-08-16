@@ -23,21 +23,16 @@ export default class MasterService {
                 return res.status(409).json({ message: "Nama sudah terdaftar" });
             }
 
-
             const master = this.masterRepository.create(dto);
             await this.masterRepository.save(master);
 
 
-            res.status(201).json({ message: "Registrasi berhasil", master: master });
+            res.status(201).json({ message: "Create berhasil", master: master });
 
         } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Registrasi gagal" });
+            res.status(500).json({ message: "Create gagal" });
         }
-    }
-
-    async me(res: Response) {
-
     }
 
     async get(page: number, limit: number, search: string, sortBy: string, res: Response) {
@@ -46,6 +41,7 @@ export default class MasterService {
         const findOptions: {
             where?: FindOptionsWhere<Master>[];
             order?: FindOptionsOrder<Master>;
+            relations?: string[];
         } = {};
 
         if (search) {
@@ -56,8 +52,11 @@ export default class MasterService {
 
         const [sortColumn, sortOrder] = sortBy.split(':');
         if (sortColumn && (sortOrder === 'ASC' || sortOrder === 'DESC')) {
-            findOptions.order = { [sortColumn]: sortOrder };
+            if (sortColumn == 'categoryName') findOptions.order = {category: {name: sortOrder}}
+            else findOptions.order = { [sortColumn]: sortOrder };
         }
+
+        findOptions.relations = ['category'];
 
         try {
             const [masters, totalItems] = await this.masterRepository.findAndCount({
@@ -68,8 +67,13 @@ export default class MasterService {
 
             const totalPages = Math.ceil(totalItems / limit);
 
+            const data = masters.map(master => ({
+                ...master,
+                categoryName: master.category?.name
+            }))
+
             res.status(200).json({
-                data: masters,
+                data,
                 meta: {
                     totalItems: totalItems,
                     currentPage: page,

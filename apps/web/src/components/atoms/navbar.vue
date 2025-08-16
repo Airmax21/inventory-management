@@ -24,17 +24,23 @@
             </a-menu-item>
             <a-menu-item key="4">
                 <template #icon>
+                    <icon-ri-truck-line />
+                </template>
+                <router-link to="/transactions">Transactions</router-link>
+            </a-menu-item>
+            <a-menu-item key="5">
+                <template #icon>
                     <icon-ri-file-chart-line />
                 </template>
                 <router-link to="/report">Report</router-link>
             </a-menu-item>
-            <a-menu-item key="5">
+            <a-menu-item key="6">
                 <template #icon>
                     <icon-ri-refresh-line />
                 </template>
                 <router-link to="/backup-restore">Backup & Restore</router-link>
             </a-menu-item>
-            <a-menu-item key="6">
+            <a-menu-item key="7">
                 <template #icon>
                     <icon-ri-user-3-line />
                 </template>

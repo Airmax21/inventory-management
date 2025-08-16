@@ -250,4 +250,7 @@ const handleUserDelete = (user: IUser) => {
 const handleUserDeleteMany = () => {
     modalDeleteManyRef.value?.open();
 };
+
+const appPageStore = useAppPageStore();
+appPageStore.setPage(['7'])
 </script>

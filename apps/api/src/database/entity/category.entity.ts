@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, BaseEntity, UpdateDateColumn, CreateDateColumn, DeleteDateColumn, BeforeInsert, OneToMany, Relation } from "typeorm";
-import { Item } from "./item.entity";
+import { Master } from "./master.entity";
 
 @Entity('category')
 @Index('UQ_category_name', ['name'], {
@@ -27,6 +27,6 @@ export class Category extends BaseEntity {
     })
     deletedAt!: Date | null;
 
-    @OneToMany('Item','category')
-    items?: Relation<Item[]>
+    @OneToMany('Master','category')
+    masters?: Relation<Master[]>
 }

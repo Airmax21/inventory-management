@@ -2,6 +2,9 @@
     <div class="flex flex-col gap-4">
         <div class="flex justify-end gap-4">
             <div class="flex">
+                <a-range-picker v-model:value="dateRange" size="large" />
+            </div>
+            <div class="flex">
                 <a-input v-model:value="search" placeholder="Search" allow-clear>
                     <template #prefix>
                         <icon-ri-search-line />
@@ -10,12 +13,12 @@
             </div>
             <div class="flex gap-4">
                 <a-button :disabled="selectedRowKeys.length < 1" type="primary" danger
-                    class="!flex !items-center !justify-center button-delete-many" @click="handleMasterDeleteMany">
+                    class="!flex !items-center !justify-center button-delete-many" @click="handleItemDeleteMany">
                     <icon-ri-delete-bin-6-line />
                 </a-button>
 
                 <a-button type="primary" class="!flex !items-center !justify-center button-add"
-                    @click="handleMasterCreate">
+                    @click="handleItemCreate">
                     <icon-ri-add-line />
                 </a-button>
             </div>
@@ -65,7 +68,7 @@
                                 })
                                 }}
                             </template> -->
-                            <a-button shape="round" class="button-edit" @click="handleMasterUpdate(record as IMaster)">
+                            <a-button shape="round" class="button-edit" @click="handleItemUpdate(record as IItem)">
                                 <div class="flex items-center justify-center">
                                     <icon-ri-pencil-line />
                                 </div>
@@ -81,7 +84,7 @@
                                 }}
                             </template> -->
                             <a-button danger shape="round" class="button-delete"
-                                @click="handleMasterDelete(record as IMaster)">
+                                @click="handleItemDelete(record as IItem)">
                                 <div class="flex items-center justify-center">
                                     <icon-ri-delete-bin-6-line />
                                 </div>
@@ -103,41 +106,54 @@
 import { api } from '@/services';
 import { keepPreviousData } from '@tanstack/vue-query';
 import type { TableProps } from 'ant-design-vue';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { isArray, isNumber } from 'lodash';
-import formModalCreate from '@/components/moleculs/masters/modal-create.vue';
-import formModalUpdate from '@/components/moleculs/masters/modal-update.vue';
-import formModalDelete from '@/components/moleculs/masters/modal-delete.vue';
-import formModalDeleteMany from '@/components/moleculs/masters/modal-delete-many.vue';
-import type { IMaster } from '@/types/master';
-
-const page = useRouteQuery<number>('page', 1, { transform: Number });
-const limit = useRouteQuery<number>('limit', 10, { transform: Number });
-const search = useRouteQuery<string>('search', '');
-const sortBy = useRouteQuery<string>('sortBy', 'name:ASC');
-const searchDebounced = refDebounced(search, 500);
+import formModalCreate from '@/components/moleculs/items/modal-create.vue';
+import formModalUpdate from '@/components/moleculs/items/modal-update.vue';
+import formModalDelete from '@/components/moleculs/items/modal-delete.vue';
+import formModalDeleteMany from '@/components/moleculs/items/modal-delete-many.vue';
+import type { IItem } from '@/types/item';
 
 const modalCreateRef = ref<InstanceType<typeof formModalCreate>>();
 const modalUpdateRef = ref<InstanceType<typeof formModalUpdate>>();
 const modalDeleteRef = ref<InstanceType<typeof formModalDelete>>();
 const modalDeleteManyRef = ref<InstanceType<typeof formModalDeleteMany>>();
 
+const page = useRouteQuery<number>('page', 1, { transform: Number });
+const limit = useRouteQuery<number>('limit', 10, { transform: Number });
+const search = useRouteQuery<string>('search', '');
+const sortBy = useRouteQuery<string>('sortBy', 'masterName:ASC');
+const searchDebounced = refDebounced(search, 500);
+const dateRange = ref<[Dayjs, Dayjs]>();
 
 watch(searchDebounced, () => {
     page.value = 1;
 });
 
-const queryParams = computed(() => ({
-    page: page.value,
-    limit: limit.value,
-    search: searchDebounced.value,
-    sortBy: sortBy.value,
-}));
+watch(dateRange, () => {
+    page.value = 1;
+});
+
+const queryParams = computed(() => {
+    const params: Record<string, any> = {
+        page: page.value,
+        limit: limit.value,
+        search: searchDebounced.value,
+        sortBy: sortBy.value,
+    };
+
+    if (dateRange.value && dateRange.value.length === 2) {
+        params.startDate = dateRange.value[0].startOf('day').toISOString();
+        params.endDate = dateRange.value[1].endOf('day').toISOString();
+    }
+
+    return params;
+});
 
 const { data, isFetching } = useQuery({
-    queryKey: ['masters/paginate', queryParams],
+    queryKey: ['items/paginate', queryParams],
     queryFn: async () => {
-        const { data } = await api.master.paginate(queryParams.value)
+        const { data } = await api.item.paginate(queryParams.value)
 
         return data;
     },
@@ -169,22 +185,42 @@ function getSortOrder(key: string, value: string) {
 const selectedRowKeys = ref<string[]>([]);
 const columns = computed<TableProps['columns']>(() => [
     {
-        title: 'Name',
-        key: 'name',
+        title: 'Master',
+        key: 'masterName',
         sorter: true,
-        sortOrder: getSortOrder('name', sortBy.value),
-        dataIndex: 'name',
+        sortOrder: getSortOrder('masterName', sortBy.value),
+        dataIndex: 'masterName',
         width: 200,
         ellipsis: true,
     },
     {
-        title: 'Category',
-        key: 'categoryName',
+        title: 'Location',
+        key: 'locationName',
         sorter: true,
-        sortOrder: getSortOrder('categoryName', sortBy.value),
-        dataIndex: 'categoryName',
+        sortOrder: getSortOrder('locationName', sortBy.value),
+        dataIndex: 'locationName',
         width: 200,
         ellipsis: true,
+    },
+    {
+        title: 'Stock',
+        key: 'stock',
+        sorter: true,
+        sortOrder: getSortOrder('stock', sortBy.value),
+        dataIndex: 'stock',
+        width: 200,
+        ellipsis: true,
+    },
+    {
+        title: 'Expired Date',
+        key: 'expDate',
+        sorter: true,
+        sortOrder: getSortOrder('expDate', sortBy.value),
+        dataIndex: 'expDate',
+        width: 200,
+        customRender: ({ record }) => {
+            return dayjs(record.expDate).format('YYYY-MM-DD HH:mm:ss');
+        },
     },
     {
         title: 'Created At',
@@ -230,16 +266,19 @@ const handleChange: TableProps['onChange'] = (
     }
 };
 
-const handleMasterCreate = () => {
+const handleItemCreate = () => {
     modalCreateRef.value?.open();
 }
-const handleMasterUpdate = (master: IMaster) => {
-    modalUpdateRef.value?.open(master);
+const handleItemUpdate = (item: IItem) => {
+    modalUpdateRef.value?.open(item);
 };
-const handleMasterDelete = (master: IMaster) => {
-    modalDeleteRef.value?.open(master);
+const handleItemDelete = (item: IItem) => {
+    modalDeleteRef.value?.open(item);
 };
-const handleMasterDeleteMany = () => {
+const handleItemDeleteMany = () => {
     modalDeleteManyRef.value?.open();
 };
+
+const appPageStore = useAppPageStore();
+appPageStore.setPage(['3'])
 </script>

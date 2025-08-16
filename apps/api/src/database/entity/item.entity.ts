@@ -19,17 +19,6 @@ export class Item extends BaseEntity {
     })
     master?: Relation<Master>;
 
-    @Column({ name: 'category_id' })
-    categoryId!: string;
-
-    @ManyToOne('Category', 'items')
-    @JoinColumn({
-        name: 'category_id',
-        referencedColumnName: 'id',
-        foreignKeyConstraintName: 'FK_items_category'
-    })
-    category?: Relation<Category>;
-
     @Column({ name: 'location_id' })
     locationId!: string;
 
@@ -44,8 +33,8 @@ export class Item extends BaseEntity {
     @Column({ type: 'integer' })
     stock!: number;
 
-    @Column({ type: 'timestamp with time zone', nullable: true })
-    exp_date?: Date
+    @Column({ name: 'exp_date', type: 'timestamp with time zone', nullable: true })
+    expDate?: Date
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
     createdAt!: Date;

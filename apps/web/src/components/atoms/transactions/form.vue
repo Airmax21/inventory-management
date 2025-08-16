@@ -1,21 +1,26 @@
 <template>
     <a-form ref="formRef" :disabled="formDisabled" :rules="rules" :model="formState" layout="vertical"
         scroll-to-first-error>
-        <a-form-item label="Name" name="name">
-            <a-input v-model:value="formState.name" placeholder="Name" size="large" />
+        <a-form-item label="Item" name="srcItemId">
+            <item-select v-model:value="formState.srcItemId" placeholder="Item" />
         </a-form-item>
-        <a-form-item label="Category" name="categoryId">
-            <category-select v-model:value="formState.categoryId" placeholder="Category" />
+        <a-form-item label="Location" name="dstLocationId">
+            <location-select v-model:value="formState.dstLocationId" placeholder="Location" />
+        </a-form-item>
+        <a-form-item label="Quantity" name="qty">
+            <a-input v-model:value="formState.qty" placeholder="Stock" type="number" size="large" />
         </a-form-item>
     </a-form>
 </template>
-<script setup lang="ts">
-import type { IMaster } from '@/types/master';
-import type { FormInstance } from 'ant-design-vue';
-import type { Rule } from 'ant-design-vue/es/form';
-import CategorySelect from '../categories/select.vue';
 
-interface FormState extends Partial<IMaster> { }
+<script setup lang="ts">
+import type { FormInstance } from 'ant-design-vue';
+import ItemSelect from '../items/select.vue';
+import LocationSelect from '../locations/select.vue';
+import type { ITransaction } from '@/types/transaction';
+import type { Rule } from 'ant-design-vue/es/form';
+
+interface FormState extends Partial<ITransaction> { }
 
 const props = defineProps<{
     data?: FormState;
@@ -29,20 +34,17 @@ const formState = reactive<FormState>({
 })
 
 const rules: Record<string, Rule[]> = {
-    name: [
-        { required: true, message: 'Silakan masukkan nama Anda' },
-    ],
-    categoryId: [
-        { required: true, message: 'Silakan masukkan Category' },
-    ]
+    srcItemId: [{ required: true, message: 'Silakan pilih Item' }],
+    dstLocationId: [{ required: true, message: 'Silakan pilih Lokasi' }],
+    qty: [{ required: true, message: 'Silakan masukkan jumlah item' }],
 };
 
 const submit = () => {
-    return new Promise<Partial<IMaster>>((resolve, reject) => {
+    return new Promise<Partial<ITransaction>>((resolve, reject) => {
         formDisabled.value = true;
         formRef.value?.validateFields()
             .then((value) => {
-                resolve(value as Partial<IMaster>)
+                resolve(value as Partial<ITransaction>)
             })
             .catch((err: Error) => {
                 reject(err)

@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, BaseEntity, UpdateDateColumn, CreateDateColumn, DeleteDateColumn, BeforeInsert, OneToMany, Relation } from "typeorm";
 import { Item } from "./item.entity";
+import { Transaction } from "./transaction.entity";
 
 @Entity('locations')
 @Index('UQ_location_name', ['name'], {
@@ -27,6 +28,9 @@ export class Location extends BaseEntity {
     })
     deletedAt!: Date | null;
 
-    @OneToMany('Item','locations')
+    @OneToMany('Item', 'locations')
     items?: Relation<Item[]>
+
+    @OneToMany('Transaction', 'locations')
+    transactions?: Relation<Transaction[]>
 }
