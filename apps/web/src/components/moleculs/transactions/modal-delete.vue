@@ -10,7 +10,7 @@
 import { api } from '@/services';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
-import type { ITransaction } from '@/types/transaction';
+import type { ITransaction } from '@/types/transactions';
 
 const transaction = ref<ITransaction>();
 

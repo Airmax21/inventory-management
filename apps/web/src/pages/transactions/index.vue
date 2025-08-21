@@ -136,7 +136,7 @@ import formModalUpdate from '@/components/moleculs/transactions/modal-update.vue
 import formModalDelete from '@/components/moleculs/transactions/modal-delete.vue';
 import formModalDeleteMany from '@/components/moleculs/transactions/modal-delete-many.vue';
 import formModalApprove from '@/components/moleculs/transactions/modal-approve.vue';
-import type { ITransaction } from '@/types/transaction';
+import type { ITransaction } from '@/types/transactions';
 
 const modalCreateRef = ref<InstanceType<typeof formModalCreate>>();
 const modalUpdateRef = ref<InstanceType<typeof formModalUpdate>>();

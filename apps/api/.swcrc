@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/swcrc.json",
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "decorators": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true,
+      "useDefineForClassFields": false
+    },
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["./*"],
+      "@api/*": ["./applications/*"],
+      "@database/*": [
+        "database/*"
+      ]
+    }
+  },
+  "module": {
+    "type": "commonjs"
+  }
+}

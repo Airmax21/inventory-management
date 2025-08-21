@@ -7,7 +7,7 @@ export const router = createRouter({
     routes: setupLayouts(routes),
 })
 
-router.beforeEach((to,from,next) => {
+router.beforeEach((to,_from,next) => {
     const appAuthStore = useAppAuthStore();
     const isAuthenticated = appAuthStore.isAuthenticated;
 

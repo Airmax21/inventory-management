@@ -1,7 +1,7 @@
 import type { IUser } from "@/types/auth";
 import dayjs from "dayjs";
 
-interface IToken {
+export interface IToken {
     token: string,
     expiresAt: string
 }

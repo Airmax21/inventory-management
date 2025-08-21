@@ -1,6 +1,6 @@
 import { ApiClient } from "@/providers";
 import type { ApiPaginateResponse } from "@/types/api";
-import type { ITransaction } from "@/types/transaction";
+import type { ITransaction } from "@/types/transactions";
 import type { PaginateParams } from "@/types/paginate";
 
 const endpoint = '/transaction';

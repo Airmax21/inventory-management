@@ -4,6 +4,7 @@ import { FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeor
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
 import dayjs from 'dayjs';
+import 'dotenv/config';
 
 export default class UserService {
     private readonly userRepository: Repository<User>;

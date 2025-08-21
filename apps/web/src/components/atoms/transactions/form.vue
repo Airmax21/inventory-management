@@ -17,7 +17,7 @@
 import type { FormInstance } from 'ant-design-vue';
 import ItemSelect from '../items/select.vue';
 import LocationSelect from '../locations/select.vue';
-import type { ITransaction } from '@/types/transaction';
+import type { ITransaction } from '@/types/transactions';
 import type { Rule } from 'ant-design-vue/es/form';
 
 interface FormState extends Partial<ITransaction> { }

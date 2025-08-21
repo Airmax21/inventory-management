@@ -1,3 +1,5 @@
+import type { IToken } from "@/stores"
+
 export interface IUser {
     id: string,
     email: string,
@@ -12,6 +14,6 @@ export interface ILogin {
     message: string
     data: {
         user: Partial<IUser>,
-        token: string
+        token: IToken
     }
 }

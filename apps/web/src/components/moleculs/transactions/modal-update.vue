@@ -12,7 +12,7 @@ import { message } from 'ant-design-vue';
 import TransactionForm from '@/components/atoms/transactions/form.vue';
 import axios from 'axios';
 import type FormCreate from '@/components/atoms/transactions/form.vue';
-import type { ITransaction } from '@/types/transaction';
+import type { ITransaction } from '@/types/transactions';
 
 const transaction = ref<ITransaction>();
 

@@ -8,6 +8,7 @@ export default {
     "ExtractDefaultPropTypes": true,
     "ExtractPropTypes": true,
     "ExtractPublicPropTypes": true,
+    "IToken": true,
     "InjectionKey": true,
     "MaybeRef": true,
     "MaybeRefOrGetter": true,

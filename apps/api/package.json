@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register' src/index.ts",
-    "build": "tsc",
+    "build": "swc src -d dist --strip-leading-paths",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
@@ -21,6 +21,8 @@
     "typeorm": "^0.3.25"
   },
   "devDependencies": {
+    "@swc/cli": "^0.7.8",
+    "@swc/core": "^1.13.3",
     "@types/bcryptjs": "^3.0.0",
     "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.3",
