@@ -1,5 +1,5 @@
 import { User } from "@database/entity/user.entity";
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, response } from "express";
 import { FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeorm";
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
@@ -63,11 +63,12 @@ export default class UserService {
             }
 
 
-            const user = this.userRepository.create(dto);
+            const user = this.userRepository.create(dto as Partial<User>);
             await this.userRepository.save(user);
 
+            const { password, ...response } = user
 
-            res.status(201).json({ message: "Registrasi berhasil", user: user });
+            res.status(201).json({ message: "Registrasi berhasil", user: response });
 
         } catch (error) {
             console.error(error);
@@ -75,9 +76,6 @@ export default class UserService {
         }
     }
 
-    async me(res: Response) {
-
-    }
 
     async get(page: number, limit: number, search: string, sortBy: string, res: Response) {
         const skip = (page - 1) * limit;

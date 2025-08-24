@@ -26,7 +26,7 @@ const { isPending, mutate } = useMutation({
     mutationFn: ({ id, data }: { id: string; data: Pick<ITransaction, 'status'> }) => api.transaction.approve(id, data),
     onSuccess: () => {
         modalHandleClose();
-        message.success('Delete Transaction Successful')
+        message.success('Approval Transaction Successful')
         void queryClient.invalidateQueries({ queryKey: ['transactions/paginate'] })
     },
     onError: (error) => {

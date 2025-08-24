@@ -36,9 +36,6 @@ export default class LocationService {
         }
     }
 
-    async me(res: Response) {
-
-    }
 
     async get(page: number, limit: number, search: string, sortBy: string, res: Response) {
         const skip = (page - 1) * limit;

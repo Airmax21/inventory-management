@@ -10,13 +10,11 @@
       "decoratorMetadata": true,
       "useDefineForClassFields": false
     },
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./*"],
-      "@api/*": ["./applications/*"],
-      "@database/*": [
-        "database/*"
-      ]
+      "@/*": ["./src/*"],
+      "@api/*": ["./src/applications/*"],
+      "@database/*": ["./src/database/*"],
     }
   },
   "module": {

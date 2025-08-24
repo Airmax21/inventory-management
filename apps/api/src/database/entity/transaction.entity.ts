@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, Index, BaseEntity, UpdateDateCo
 import { Item } from "./item.entity";
 import { Location } from "./location.entity";
 
-enum StatusEnum {
+export enum StatusEnum {
     APPROVE = 'approve',
     REJECT = 'reject'
 }

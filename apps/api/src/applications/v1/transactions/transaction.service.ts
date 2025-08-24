@@ -1,14 +1,19 @@
 import e, { Router, Request, Response } from "express";
 import { Between, FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeorm";
-import { Transaction } from "@/database/entity/transaction.entity";
+import { StatusEnum, Transaction } from "@/database/entity/transaction.entity";
+import dayjs from 'dayjs'
+import { Item } from "@/database/entity/item.entity";
 
 export default class TransactionService {
     private readonly transactionRepository: Repository<Transaction>;
+    private readonly itemRepository: Repository<Item>
 
     constructor(
-        transactionRepository: Repository<Transaction>
+        transactionRepository: Repository<Transaction>,
+        itemRepository: Repository<Item>,
     ) {
-        this.transactionRepository = transactionRepository
+        this.transactionRepository = transactionRepository,
+            this.itemRepository = itemRepository
     }
 
 
@@ -25,9 +30,6 @@ export default class TransactionService {
         }
     }
 
-    async me(res: Response) {
-
-    }
 
     async get(startDate: string, endDate: string, page: number, limit: number, search: string, sortBy: string, res: Response) {
         const skip = (page - 1) * limit;
@@ -153,6 +155,44 @@ export default class TransactionService {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Delete gagal" });
+        }
+    }
+
+    async transactions(id: string, status: StatusEnum, res: Response) {
+        try {
+            let transaction = await this.transactionRepository.findOne({ 
+                where: { id }, 
+                relations: ['location', 'item', 'item.master', 'item.location'] 
+            })
+            if (!transaction) return res.status(404).json({ message: 'Transactions is Not Found' })
+            if (status == StatusEnum.APPROVE) {
+                const itemSrc = await this.itemRepository.findOneBy({ id: transaction.item?.id });
+                if (!itemSrc) return res.status(404).json({ message: 'Item Source is Not Found' })
+                const qty = transaction.qty
+                itemSrc.stock -= qty                
+                await this.itemRepository.save(itemSrc)                
+                const itemDst = await this.itemRepository.findOneBy({ masterId: transaction.item?.master?.id, locationId: transaction.location?.id, expDate: transaction.item?.expDate })                
+                if (itemDst) {
+                    itemDst.stock += qty
+                    await this.itemRepository.save(itemDst)
+                } else {
+                    const item = this.itemRepository.create({
+                        masterId: transaction.item?.master?.id,
+                        locationId: transaction.location?.id,
+                        expDate: transaction.item?.expDate,
+                        stock: qty,
+                    })                    
+                    await this.itemRepository.save(item)
+                }
+            }            
+            await this.update(id, {
+                status: status,
+                approveAt: dayjs().toDate()
+            }, res)
+
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Transaksi gagal" });
         }
     }
 } 

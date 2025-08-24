@@ -28,9 +28,6 @@ export default class ItemService {
         }
     }
 
-    async me(res: Response) {
-
-    }
 
     async get(startDate: string, endDate: string, page: number, limit: number, search: string, sortBy: string, res: Response) {
         const skip = (page - 1) * limit;

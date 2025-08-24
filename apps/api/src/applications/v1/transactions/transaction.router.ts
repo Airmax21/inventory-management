@@ -5,11 +5,13 @@ import TransactionService from "./transaction.service";
 import authMiddleware, { AuthenticatedRequest } from "@/middleware/auth";
 import { Master } from "@/database/entity/master.entity";
 import dayjs from 'dayjs';
+import { Item } from "@/database/entity/item.entity";
 
 
 const router = Router();
 const transactionRepository = AppDataSource.getRepository(Transaction);
-const transactionService = new TransactionService(transactionRepository);
+const itemRepository = AppDataSource.getRepository(Item);
+const transactionService = new TransactionService(transactionRepository, itemRepository);
 /**
  * @swagger
  * "/transaction":
@@ -156,11 +158,6 @@ router.patch("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Resp
     const params = req.params
     const dto = req.body
 
-    console.log('DTO: ', dto)
-
-    await transactionService.update(params.id, {
-        status: dto.status,
-        approveAt: dayjs().toDate()
-    }, res)
+    await transactionService.transactions(params.id,dto.status,res);
 })
 export default router;

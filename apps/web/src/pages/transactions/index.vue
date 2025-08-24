@@ -73,7 +73,7 @@
               <icon-mdi-sync />
             </a-button> -->
 
-                        <a-tooltip title="Approve">
+                        <a-tooltip title="Approve" v-if="!record.approveAt">
                             <a-button shape="round" @click="handleApproveTransaction(record as ITransaction)">
                                 <div class="flex items-center justify-center">
                                     <icon-ri-checkbox-circle-line />
