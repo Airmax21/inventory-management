@@ -53,16 +53,16 @@ export default class ItemService {
         if (startDate && endDate) {
             const start = new Date(startDate);
             const end = new Date(endDate);
-            
+
             const dateCondition = { createdAt: Between(start, end) };
-            
-            if (findOptions.where) {                
+
+            if (findOptions.where) {
                 if (Array.isArray(findOptions.where)) {
                     findOptions.where.push(dateCondition as FindOptionsWhere<Item>);
                 } else {
                     findOptions.where = [findOptions.where, dateCondition as FindOptionsWhere<Item>];
                 }
-            } else {                
+            } else {
                 findOptions.where = [dateCondition as FindOptionsWhere<Item>];
             }
         }
@@ -150,6 +150,17 @@ export default class ItemService {
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Delete gagal" });
+        }
+    }
+
+    async getTotal(res: Response) {
+        try {
+            let total = await this.itemRepository.count();
+
+            res.status(200).json(total)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Gagal mengambil data" });
         }
     }
 } 

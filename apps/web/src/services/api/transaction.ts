@@ -25,5 +25,8 @@ export default {
     },
     approve: (id: ITransaction['id'], body: Pick<ITransaction, 'status'>) => {
         return ApiClient.patch<Partial<ITransaction>>(`${endpoint}/${id}`, body)
+    },
+    getTotal: () => {
+        return ApiClient.get<Number>(`${endpoint}/total`)
     }
 }

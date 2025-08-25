@@ -22,5 +22,8 @@ export default {
         return ApiClient.delete<IItem>(endpoint, {
             params: { ids: ids.join(',') }
         })
+    },
+    getTotal: () => {
+        return ApiClient.get<Number>(`${endpoint}/total`)
     }
 }

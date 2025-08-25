@@ -148,8 +148,11 @@ router.delete("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Res
 
 router.delete("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const ids: any = req.query.ids;
-    console.log(ids)
     await itemService.deleteMany(ids, res);
+})
+
+router.get("/total", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+    await itemService.getTotal(res)
 })
 
 export default router;

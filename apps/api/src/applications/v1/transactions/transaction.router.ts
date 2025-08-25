@@ -160,4 +160,8 @@ router.patch("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Resp
 
     await transactionService.transactions(params.id,dto.status,res);
 })
+
+router.get("/total",authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+    await transactionService.getTotal(res);
+})
 export default router;

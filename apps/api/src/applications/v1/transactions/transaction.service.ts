@@ -195,4 +195,15 @@ export default class TransactionService {
             res.status(500).json({ message: "Transaksi gagal" });
         }
     }
+
+    async getTotal(res: Response) {
+        try {
+            let total = await this.transactionRepository.count();
+
+            res.status(200).json(total)
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Gagal mengambil data" });
+        }
+    }
 } 
