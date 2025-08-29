@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
 export interface AuthenticatedRequest extends Request {
-    user?: { id: number; email: string };
+    user?: { id: number; email: string; role: string };
 }
 
 const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -19,6 +19,7 @@ const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunc
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
             id: number;
             email: string;
+            role: string;
         };
         req.user = decoded;
         next();

@@ -1,6 +1,11 @@
 import bcrypt from "bcryptjs";
 import { Entity, PrimaryGeneratedColumn, Column, Index, BaseEntity, UpdateDateColumn, CreateDateColumn, DeleteDateColumn, BeforeInsert } from "typeorm";
 
+export enum RoleEnum {
+    ADMIN = 'admin',
+    USER = 'user'
+}
+
 @Entity('users')
 @Index('UQ_user_name', ['username', 'email'], {
     unique: true,
@@ -21,6 +26,9 @@ export class User extends BaseEntity {
 
     @Column({ type: 'citext' })
     name?: string;
+
+    @Column({ type: 'enum', enum: RoleEnum, nullable: false })
+    role!: RoleEnum
 
     @CreateDateColumn({ name: 'created_at', type: 'timestamp with time zone' })
     createdAt!: Date;

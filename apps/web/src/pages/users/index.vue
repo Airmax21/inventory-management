@@ -109,7 +109,7 @@ import formModalCreate from '@/components/moleculs/users/modal-create.vue';
 import formModalUpdate from '@/components/moleculs/users/modal-update.vue';
 import formModalDelete from '@/components/moleculs/users/modal-delete.vue';
 import formModalDeleteMany from '@/components/moleculs/users/modal-delete-many.vue';
-import type { IUser } from '@/types/auth';
+import type { IUser } from '@/types/auth.ts';
 
 const page = useRouteQuery<number>('page', 1, { transform: Number });
 const limit = useRouteQuery<number>('limit', 10, { transform: Number });
@@ -195,6 +195,16 @@ const columns = computed<TableProps['columns']>(() => [
         ellipsis: true,
     },
     {
+        title: 'Role',
+        key: 'role',
+        sorter: true,
+        sortOrder: getSortOrder('role', sortBy.value),
+        dataIndex: 'role',
+        width: 200,
+        ellipsis: true,
+    },
+
+    {
         title: 'Created At',
         key: 'createdAt',
         sorter: true,
@@ -253,4 +263,11 @@ const handleUserDeleteMany = () => {
 
 const appPageStore = useAppPageStore();
 appPageStore.setPage(['7'])
+
+definePage({
+  meta: {
+    requiresAuth: true,
+    requiresAdmin: true
+  },
+});
 </script>

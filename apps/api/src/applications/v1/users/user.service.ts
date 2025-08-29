@@ -17,7 +17,10 @@ export default class UserService {
 
     async login(dto: any, res: Response) {
         try {
-            const user = await this.userRepository.findOne({ where: { email: dto.email }, select: ['email', 'username', 'password'] });
+            const user = await this.userRepository.findOne({ 
+                where: { email: dto.email }, 
+                select: ['id', 'email', 'username', 'password', 'role'] 
+            });
             if (!user) {
                 return res.status(401).json({ message: "Email atau password salah" });
             }
@@ -28,7 +31,11 @@ export default class UserService {
             }
 
             const token = jwt.sign(
-                { id: user.id, email: user.email },
+                { 
+                    id: user.id, 
+                    email: user.email,
+                    role: user.role 
+                },
                 process.env.JWT_SECRET as string,
                 { expiresIn: '6h' }
             );
@@ -38,7 +45,8 @@ export default class UserService {
             const data = {
                 user: {
                     email: user.email,
-                    username: user.username
+                    username: user.username,
+                    role: user.role
                 },
                 token: {
                     token,

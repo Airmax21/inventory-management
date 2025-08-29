@@ -1,4 +1,5 @@
 import type { IUser } from "@/types/auth";
+import { RoleEnum } from "@/types/auth";
 import dayjs from "dayjs";
 
 export interface IToken {
@@ -19,12 +20,16 @@ export const useAppAuthStore = defineStore('auth', {
         }),
         user: useLocalStorage('auth/user', {
             email: '',
-            username: ''
+            username: '',
+            role: undefined
         })
     }),
     getters: {
         isAuthenticated(state): boolean {
             return !!state.token.token && !!state.token.expiresAt && dayjs().isBefore(dayjs(state.token.expiresAt));
+        },
+        isAdmin(state): boolean {
+            return state.user.role === RoleEnum.ADMIN;
         }
     },
     actions: {

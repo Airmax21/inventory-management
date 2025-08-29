@@ -1,5 +1,5 @@
 import { ApiClient } from '@/providers';
-import type { ILogin, IUser } from '@/types/auth';
+import type { ILogin, IUser } from '@/types/auth.ts';
 
 
 const endpoint = '/user';

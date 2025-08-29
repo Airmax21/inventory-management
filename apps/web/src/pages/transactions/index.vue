@@ -73,7 +73,7 @@
               <icon-mdi-sync />
             </a-button> -->
 
-                        <a-tooltip title="Approve" v-if="!record.approveAt">
+                        <a-tooltip title="Approve" v-if="!record.approveAt && appAuthStore.user.role === 'admin'">
                             <a-button shape="round" @click="handleApproveTransaction(record as ITransaction)">
                                 <div class="flex items-center justify-center">
                                     <icon-ri-checkbox-circle-line />
@@ -150,6 +150,7 @@ const search = useRouteQuery<string>('search', '');
 const sortBy = useRouteQuery<string>('sortBy', 'srcItemName:ASC');
 const searchDebounced = refDebounced(search, 500);
 const dateRange = ref<[Dayjs, Dayjs]>();
+const appAuthStore = useAppAuthStore();
 
 watch(searchDebounced, () => {
     page.value = 1;

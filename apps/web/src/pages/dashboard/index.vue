@@ -15,12 +15,12 @@
         </a-card>
     </a-flex>
     <br>
-    <a-typography-title :level="3">Recent Transactions</a-typography-title>
+    <a-typography-title :level="3">Expiring Soon</a-typography-title>
     <a-table :row-key="(item) => item.id" :loading="itemsFething" :data-source="itemsData.data" :columns="itemColumns"
         :scroll="{
             scrollToFirstRowOnChange: true,
             x: '100%'
-        }">
+        }" :pagination="false">
 
     </a-table>
     <br>
@@ -29,7 +29,7 @@
         :columns="columns" :scroll="{
             scrollToFirstRowOnChange: true,
             x: '100%'
-        }">
+        }" :pagination="false">
 
     </a-table>
 </template>
@@ -69,7 +69,7 @@ const { data: itemsData, isFetching: itemsFething } = useQuery({
         const { data } = await api.item.paginate({
             limit: 10,
             page: 1,
-            sortBy: 'expDate:DESC'
+            sortBy: 'expDate:ASC'
         })
 
         return data;

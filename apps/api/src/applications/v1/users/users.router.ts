@@ -3,6 +3,7 @@ import { AppDataSource } from "@database/datasource";
 import { User } from "@database/entity/user.entity";
 import UserService from "./user.service";
 import authMiddleware, { AuthenticatedRequest } from "@/middleware/auth";
+import adminMiddleware from "@/middleware/admin";
 
 
 const router = Router();
@@ -106,7 +107,7 @@ router.get("/me", authMiddleware, async (req: AuthenticatedRequest, res: Respons
     res.json(user);
 });
 
-router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.get("/", authMiddleware, adminMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const search = (req.query.search as string) || '';
@@ -161,7 +162,7 @@ router.get("/", authMiddleware, async (req: AuthenticatedRequest, res: Response)
  *     '401':
  *       description: Email atau password salah.
  */
-router.put("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.put("/:id", authMiddleware, adminMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const params = req.params
     const dto = req.body
 
@@ -190,14 +191,14 @@ router.put("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Respon
  *     '401':
  *       description: Email atau password salah.
  */
-router.delete("/:id", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/:id", authMiddleware, adminMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const params = req.params
     const dto = req.body
 
     await userService.delete(params.id, res);
 })
 
-router.delete("/", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+router.delete("/", authMiddleware, adminMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     const ids: any = req.query.ids;
     console.log(ids)
     await userService.deleteMany(ids, res);

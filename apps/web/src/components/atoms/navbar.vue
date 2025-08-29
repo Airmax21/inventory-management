@@ -34,13 +34,13 @@
                 </template>
                 <router-link to="/report">Report</router-link>
             </a-menu-item>
-            <a-menu-item key="6">
+            <a-menu-item key="6" v-if="appAuthStore.user.role === 'admin'">
                 <template #icon>
                     <icon-ri-refresh-line />
                 </template>
                 <router-link to="/backup-restore">Backup & Restore</router-link>
             </a-menu-item>
-            <a-menu-item key="7">
+            <a-menu-item key="7" v-if="appAuthStore.user.role === 'admin'">
                 <template #icon>
                     <icon-ri-user-3-line />
                 </template>
@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 const appPageStore = useAppPageStore()
+const appAuthStore = useAppAuthStore();
 const collapsed = ref<boolean>(false);
 const selectedKeys = computed({
     get: () => appPageStore.page,

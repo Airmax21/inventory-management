@@ -1,5 +1,6 @@
 <template>
-    <a-form ref="formRef" :disabled="formDisabled" :rules="rules" :model="formState" layout="vertical" scroll-to-first-error>
+    <a-form ref="formRef" :disabled="formDisabled" :rules="rules" :model="formState" layout="vertical"
+        scroll-to-first-error>
         <a-form-item label="Email" name="email">
             <a-input v-model:value="formState.email" v-focus placeholder="Email" size="large" />
         </a-form-item>
@@ -15,14 +16,20 @@
         <a-form-item label="Name" name="name">
             <a-input v-model:value="formState.name" placeholder="Name" size="large" />
         </a-form-item>
+
+        <a-form-item label="Role" name="role">
+            <select-async v-model:value="formState.role" placeholder="Name" :options="roleOptions" size="large" />
+        </a-form-item>
     </a-form>
 </template>
 <script setup lang="ts">
 import type { IUser } from '@/types/auth';
 import type { FormInstance } from 'ant-design-vue';
 import type { Rule } from 'ant-design-vue/es/form';
+import selectAsync from '../select-async.vue';
 
-interface FormState extends Partial<IUser> {}
+
+interface FormState extends Partial<IUser> { }
 
 const props = defineProps<{
     data?: FormState;
@@ -34,6 +41,11 @@ const formDisabled = ref<boolean>(false);
 const formState = reactive<FormState>({
     ...props.data
 })
+
+const roleOptions = [
+    { label: 'Admin', value: 'admin' },
+    { label: 'User', value: 'user' }
+]
 
 const rules: Record<string, Rule[]> = {
     email: [
@@ -50,6 +62,9 @@ const rules: Record<string, Rule[]> = {
     name: [
         { required: false, message: 'Silakan masukkan nama Anda' },
     ],
+    role: [
+        { required: true, message: 'Silahkan masukkan role' }
+    ]
 };
 
 const submit = () => {
