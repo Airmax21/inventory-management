@@ -3,7 +3,7 @@ import { FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeor
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
 import dayjs from 'dayjs';
-import { Location } from "@/database/entity/location.entity";
+import { Location } from "@/database/entity";
 
 export default class LocationService {
     private readonly locationRepository: Repository<Location>;
@@ -132,5 +132,11 @@ export default class LocationService {
             console.error(error);
             res.status(500).json({ message: "Delete gagal" });
         }
+    }
+
+
+    async getAll() {
+        const data = await this.locationRepository.find()
+        return data;
     }
 } 

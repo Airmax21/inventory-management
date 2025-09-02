@@ -1,4 +1,12 @@
 <template>
+    <a-flex justify="flex-end">
+        <a-button type="primary" size="large" @click="mutate()" :loading="isPending">
+            <div class="flex items-center gap-2 justify-center">
+                <IconRiFileExcel2Line />
+                Export Excel
+            </div>
+        </a-button>
+    </a-flex><br>
     <div class="flex flex-col gap-4">
         <div class="flex justify-end gap-4">
             <div class="flex">
@@ -167,6 +175,25 @@ const { data, isFetching } = useQuery({
             totalPages: 0,
         },
     }
+})
+
+const { isPending, mutate } = useMutation({
+    mutationFn: api.excel.item,
+    onSuccess: ({ data }) => {
+        const unixTimestamp = dayjs().unix();
+
+        const fileName = `laporan_item_${unixTimestamp}.xlsx`;
+
+        const url = window.URL.createObjectURL(new Blob([data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+    },
 })
 
 function getSortOrder(key: string, value: string) {

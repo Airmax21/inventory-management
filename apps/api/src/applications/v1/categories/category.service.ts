@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeorm";
-import { Category } from "@/database/entity/category.entity";
+import { Category } from "@/database/entity";
+import ExcelJS from 'exceljs'
 
 export default class CategoryService {
     private readonly categoryRepository: Repository<Category>;
@@ -129,5 +130,10 @@ export default class CategoryService {
             console.error(error);
             res.status(500).json({ message: "Delete gagal" });
         }
+    }
+
+    async getAll() {
+        const data = await this.categoryRepository.find()
+        return data;
     }
 } 

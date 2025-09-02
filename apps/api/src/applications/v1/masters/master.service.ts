@@ -3,7 +3,7 @@ import { FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeor
 import * as bcrypt from "bcryptjs";
 import * as jwt from 'jsonwebtoken';
 import dayjs from 'dayjs';
-import { Master } from "@/database/entity/master.entity";
+import { Master } from "@/database/entity";
 
 export default class MasterService {
     private readonly masterRepository: Repository<Master>;
@@ -52,7 +52,7 @@ export default class MasterService {
 
         const [sortColumn, sortOrder] = sortBy.split(':');
         if (sortColumn && (sortOrder === 'ASC' || sortOrder === 'DESC')) {
-            if (sortColumn == 'categoryName') findOptions.order = {category: {name: sortOrder}}
+            if (sortColumn == 'categoryName') findOptions.order = { category: { name: sortOrder } }
             else findOptions.order = { [sortColumn]: sortOrder };
         }
 
@@ -139,5 +139,17 @@ export default class MasterService {
             console.error(error);
             res.status(500).json({ message: "Delete gagal" });
         }
+    }
+
+    async getAll() {
+        const masters = await this.masterRepository.find({
+            relations: ['category']
+        })
+        const data = masters.map(master => ({
+            ...master,
+            categoryName: master.category?.name
+        }))
+
+        return data;
     }
 } 

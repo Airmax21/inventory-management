@@ -1,8 +1,7 @@
 import { Router, Request, Response } from "express";
 import { Between, FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeorm";
 import dayjs from 'dayjs';
-import { Item } from "@/database/entity/item.entity";
-import { Master } from "@/database/entity/master.entity";
+import { Item, Master } from "@/database/entity";
 
 export default class ItemService {
     private readonly itemRepository: Repository<Item>;
@@ -162,5 +161,18 @@ export default class ItemService {
             console.error(error);
             res.status(500).json({ message: "Gagal mengambil data" });
         }
+    }
+
+    async getAll() {
+        const items = await this.itemRepository.find({
+            relations: ['master', 'location']
+        });
+        const data = items.map(item => ({
+            ...item,
+            masterName: item.master?.name,
+            locationName: item.location?.name
+        }))
+
+        return data
     }
 } 

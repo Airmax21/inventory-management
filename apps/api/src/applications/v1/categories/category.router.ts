@@ -148,4 +148,8 @@ router.delete("/", authMiddleware, async (req: AuthenticatedRequest, res: Respon
     await categoryService.deleteMany(ids, res);
 })
 
+router.get("/export",authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
+    
+})
+
 export default router;

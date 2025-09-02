@@ -3,7 +3,7 @@ import { AppDataSource } from "@database/datasource";
 import { Item } from "@database/entity/item.entity";
 import ItemService from "./item.service";
 import authMiddleware, { AuthenticatedRequest } from "@/middleware/auth";
-import { Master } from "@/database/entity/master.entity";
+import { Master } from "@/database/entity";
 
 
 const router = Router();

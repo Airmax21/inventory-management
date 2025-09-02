@@ -7,6 +7,7 @@ import itemRouter from "@api/v1/items/item.router";
 import transactionRouter from "@api/v1/transactions/transaction.router";
 import backupRouter from "@api/v1/backup/backup.router";
 import restoreRouter from "@api/v1/restore/restore.router";
+import excelRouter from "@api/v1/excels/excel.router";
 
 const v1Router = Router();
 
@@ -18,5 +19,6 @@ v1Router.use('/item', itemRouter)
 v1Router.use('/transaction', transactionRouter)
 v1Router.use('/backup', backupRouter)
 v1Router.use('/restore', restoreRouter)
+v1Router.use('/excel',excelRouter)
 
 export default v1Router;

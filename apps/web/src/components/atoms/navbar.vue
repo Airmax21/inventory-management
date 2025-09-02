@@ -28,12 +28,6 @@
                 </template>
                 <router-link to="/transactions">Transactions</router-link>
             </a-menu-item>
-            <a-menu-item key="5">
-                <template #icon>
-                    <icon-ri-file-chart-line />
-                </template>
-                <router-link to="/report">Report</router-link>
-            </a-menu-item>
             <a-menu-item key="6" v-if="appAuthStore.user.role === 'admin'">
                 <template #icon>
                     <icon-ri-refresh-line />

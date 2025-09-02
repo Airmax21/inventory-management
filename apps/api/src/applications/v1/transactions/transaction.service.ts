@@ -1,8 +1,7 @@
 import e, { Router, Request, Response } from "express";
 import { Between, FindOptionsOrder, FindOptionsWhere, In, Like, Repository } from "typeorm";
-import { StatusEnum, Transaction } from "@/database/entity/transaction.entity";
+import { StatusEnum, Transaction, Item } from "@/database/entity";
 import dayjs from 'dayjs'
-import { Item } from "@/database/entity/item.entity";
 
 export default class TransactionService {
     private readonly transactionRepository: Repository<Transaction>;
@@ -160,18 +159,18 @@ export default class TransactionService {
 
     async transactions(id: string, status: StatusEnum, res: Response) {
         try {
-            let transaction = await this.transactionRepository.findOne({ 
-                where: { id }, 
-                relations: ['location', 'item', 'item.master', 'item.location'] 
+            let transaction = await this.transactionRepository.findOne({
+                where: { id },
+                relations: ['location', 'item', 'item.master', 'item.location']
             })
             if (!transaction) return res.status(404).json({ message: 'Transactions is Not Found' })
             if (status == StatusEnum.APPROVE) {
                 const itemSrc = await this.itemRepository.findOneBy({ id: transaction.item?.id });
                 if (!itemSrc) return res.status(404).json({ message: 'Item Source is Not Found' })
                 const qty = transaction.qty
-                itemSrc.stock -= qty                
-                await this.itemRepository.save(itemSrc)                
-                const itemDst = await this.itemRepository.findOneBy({ masterId: transaction.item?.master?.id, locationId: transaction.location?.id, expDate: transaction.item?.expDate })                
+                itemSrc.stock -= qty
+                await this.itemRepository.save(itemSrc)
+                const itemDst = await this.itemRepository.findOneBy({ masterId: transaction.item?.master?.id, locationId: transaction.location?.id, expDate: transaction.item?.expDate })
                 if (itemDst) {
                     itemDst.stock += qty
                     await this.itemRepository.save(itemDst)
@@ -181,10 +180,10 @@ export default class TransactionService {
                         locationId: transaction.location?.id,
                         expDate: transaction.item?.expDate,
                         stock: qty,
-                    })                    
+                    })
                     await this.itemRepository.save(item)
                 }
-            }            
+            }
             await this.update(id, {
                 status: status,
                 approveAt: dayjs().toDate()
@@ -205,5 +204,20 @@ export default class TransactionService {
             console.error(error);
             res.status(500).json({ message: "Gagal mengambil data" });
         }
+    }
+
+    async getAll() {
+        const transactions = await this.transactionRepository.find({
+            relations: ['location', 'item', 'item.master', 'item.location']
+        });
+
+        const data = transactions.map(transaction => ({
+            ...transaction,
+            srcItemName: transaction.item?.master?.name,
+            srcItemLocation: transaction.item?.location?.name,
+            dstLocationName: transaction.location?.name
+        }))
+
+        return data
     }
 } 
