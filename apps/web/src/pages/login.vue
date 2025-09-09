@@ -2,7 +2,7 @@
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 p-4">
         <div class="w-full max-w-md">
             <div class="text-center mb-8">
-                <h1 class="text-4xl font-bold text-white mb-2">Inventory Management</h1>
+                <h1 class="text-4xl font-bold text-white mb-2">MAGIS</h1>
                 <div class="h-1 w-20 bg-white/30 mx-auto rounded-full"></div>
             </div>
             
@@ -16,7 +16,7 @@
 
                 <div class="mt-6 text-center">
                     <p class="text-sm text-gray-600">
-                        © {{ currentYear }} Inventory Management System. All rights reserved.
+                        © {{ currentYear }} Magis. All rights reserved.
                     </p>
                 </div>
             </a-card>

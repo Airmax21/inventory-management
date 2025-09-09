@@ -1,7 +1,7 @@
 <template>
     <a-layout-sider theme="light" v-model:collapsed="collapsed" collapsible width="250">
         <a-flex justify="center" align="center">
-            <img alt="logo" src="https://placehold.co/600x400/png" style="display:block; width: 70%;" />
+            <img alt="logo" src="/magis.png" style="display:block; width: 70%;" />
         </a-flex>
         <a-menu v-model:selectedKeys="selectedKeys" v-model:openKeys="openKeys" mode="inline">
             <a-menu-item key="1">

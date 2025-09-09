@@ -5,7 +5,7 @@
             <a-layout-header style="background: #fff; padding: 0;">
                 <div class="flex items-center justify-between h-full px-6">
                     <p class="text-2xl font-bold">
-                        Manajemen Inventory
+                        MAGIS
                     </p>
                     <div class="flex items-center">
                         <a-dropdown>
@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { Navbar } from '@/components';
-import { DownOutlined, LogoutOutlined } from '@ant-design/icons-vue';
+import { LogoutOutlined } from '@ant-design/icons-vue';
 import { useAppAuthStore } from '@/stores/app-auth';
 import { useRouter } from 'vue-router';
 import { computed } from 'vue';
