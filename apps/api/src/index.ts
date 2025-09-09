@@ -16,7 +16,9 @@ AppDataSource.initialize().then(async () => {
 
     app.use("/api/v1", v1Router);
 
-    app.listen(process.env.APP_PORT || 3000, () => {
-        console.log("Server Express telah berjalan di port 3000");
+    const port = process.env.APP_PORT || 3000
+
+    app.listen(port, () => {
+        console.log(`Server Express telah berjalan di port ${port}`);
     });
 }).catch(error => console.log(error));
