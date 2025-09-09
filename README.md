@@ -1,135 +1,142 @@
-# Turborepo starter
+# Magis
 
-This Turborepo starter is maintained by the Turborepo core team.
+# Prerequisites
 
-## Using this example
+1. NodeJS v22
+2. Yarn
+3. Proxy Server (e.g Nginx)
+4. PostgreSQL v14
+5. PM2 Process Manager
 
-Run the following command:
+# Installations
 
-```sh
-npx create-turbo@latest
+1. Cloning repository dari magis.
+2. Install semua dependency.
+
+```bash
+yarn install
 ```
 
-## What's inside?
+## Dev
 
-This Turborepo includes the following packages/apps:
+### API
 
-### Apps and Packages
+1. Copy env.example ke .env.
+2. Atur config sesuai kebutuhan.
+    
+    ```bash
+    APP_PORT=3000
+    MODE=dev
+    
+    DB_HOST=localhost
+    DB_PORT=5432
+    DB_USER=postgres
+    DB_PASSWORD=postgres
+    DB_NAME=inventory
+    
+    JWT_SECRET=superrahasia_dan_unik
+    ```
+    
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Web
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. Atur proxy pada vite.config.ts ke arah port API
 
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```jsx
+...
+  server: {
+    proxy: {
+      '/api': 'http://localhost:3000'
+    }
+  },
+...
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## Production
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+1. Build app.
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+yarn build
 ```
 
-### Develop
+1. Copy env.example & package.json ke dist/api/
+2. Pindahkan semua isi folder dist ke server.
 
-To develop all apps and packages, run the following command:
+### API
 
-```
-cd my-turborepo
+1. Install semua dependensi dari API
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+# Pastikan active directory di API
+yarn install
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+1. Copy env.example ke .env.
+2. Atur config sesuai kebutuhan.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+APP_PORT=3000
+MODE=prod
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=inventory
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+JWT_SECRET=superrahasia_dan_unik
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+1. Migrasi semua database.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+yarn migration:run
 ```
 
-## Useful Links
+1. Jalankan service API
 
-Learn more about the power of Turborepo:
+```bash
+pm2 start dist/main.js --name api
+pm2 save
+```
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+### Nginx
+
+1. Setup nginx agar mengarah ke API & Web pada file /etc/nginx/sites-enabled/default.
+
+```bash
+server {
+    listen 80;
+    server_name magis.com; #Domain jika punya
+
+    client_max_body_size 100M;
+    root /home/test/Services/magis/web; # Path Website
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api {
+       proxy_pass http://127.0.0.1:3000/api; # Arahkan ke API
+       proxy_redirect off;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    }
+}
+```
+
+1. Test config nginx
+
+```bash
+sudo nginx -t
+```
+
+1. Reload nginx
+
+```bash
+sudo nginx -s reload
+```
